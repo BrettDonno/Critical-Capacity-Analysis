@@ -5,7 +5,7 @@
 //          Description: Defines the CCA method //
 //                                              //
 //////////////////////////////////////////////////
-
+'use strict';
 
 //Core functions
 //     CCA (NP, isEnergy, dt)
@@ -13,7 +13,11 @@
 
 function CCA(NP, isEnergy = false ,dt = 1){
     
+    let NPlen = NP.length;
     let ExtermaList=[];
+    let NE;
+    let ExtermaIndex;
+    
     if(isEnergy){ // Find extreme in energy
         NE = NP
         NE.unshift(0)
@@ -21,10 +25,10 @@ function CCA(NP, isEnergy = false ,dt = 1){
         ExtermaIndex = findZeroCrossing(NE)
                
         for(const EI of ExtermaIndex){
-            Start = EI[0]
-            End   = EI[1]
+            let Start = EI[0]
+            let End   = EI[1]
             //extract section where extrema is and find total energy.
-            Energy_Extrema = (NE.slice(Start,End+1)).reduce((a,b) => a+b,0)
+            let Energy_Extrema = (NE.slice(Start,End+1)).reduce((a,b) => a+b,0)
             ExtermaList.push(Energy_Extrema);
         }
         //perform comulative sum
@@ -38,12 +42,16 @@ function CCA(NP, isEnergy = false ,dt = 1){
         NE = CalcNetEnergy(NP,dt)
         //Perform difference
         NEdiff = NE.map((v, i, a) => v - (a[i - 1] || 0));
-        ExtermaIndex = findZeroCrossing(NEdiff)
+        let ExtermaIndex = findZeroCrossing(NEdiff)
         
         for (const j in ExtermaIndex){
             ExtermaList.push( NE [ ExtermaIndex[j][1] ])
         }
     }
+        
+    // in a method we add 0 to start of time-series. This corrects the addtiion for the time.
+    if(NPlen != NP.length) 
+        NP.shift()
     
     //peform CCA return an object containing
         //Critcap: Gen CC and Load CC
@@ -97,6 +105,12 @@ function ModRainflowAlgoritm(ExtermaList, ExtermaIndex, NE ){
     let Einto    = [] // energy injected into TS
     let Einto_T  = []
     
+    let ampl; //initilise
+    let startT;
+    let endT;
+    let firstT
+    let midT;
+    
 //Three phases, A) dealing with cycles, B) dealing with residues and, C)  Sorting output:
     //Phase A, dealing with cycles
     for(let idx = 0 ; idx< ExtermaList.length ; idx++){
@@ -125,7 +139,7 @@ function ModRainflowAlgoritm(ExtermaList, ExtermaIndex, NE ){
                 } else{ //value on left hand side of rainflow plot (load CC)
                     LoadCC.push(ampl)
                     LoadCycleType.push(0.5)
-                    LoadTS.push([ ExtermaIndex[startT][0],ExtermaIndex[endT][1]+1 ] )
+                    LoadTS.push([ ExtermaIndex[startT][1],ExtermaIndex[endT][1] ] )
                     
                     LTStart.push(ExtermaIndex[ CT[0] ][0]);
                 }
@@ -136,7 +150,7 @@ function ModRainflowAlgoritm(ExtermaList, ExtermaIndex, NE ){
                 
                 // There are four points being considered. The three points in the algorithm (A,B,C) and the point before the three points (Z) since the energy from Z to A can be used to supply B to C. Note that A->B might not have enough energy from B->C, hence it needs energy from Z->A
                 // Note there may have been any number of  cycle-matches between Z and A, hence not all of the energy is used for beyond point A.
-                firstT  = CT.at(-4);
+                firstT = CT.at(-4);
                 startT = CT.at(-3); 
                 midT   = CT.at(-2);
                 endT   = CT.at(-1);
@@ -149,36 +163,29 @@ function ModRainflowAlgoritm(ExtermaList, ExtermaIndex, NE ){
                 LoadCycleType.push(1)
                 
                 //Track time index of both CC's
-                if( Es.at(-2)-Es.at(-3)>0 ) { // transition from low to high 
+                if( Es.at(-2) - Es.at(-3) > 0 ) { // transition from low to high 
                     
                     GenTS.push( [ ExtermaIndex[startT][1], ExtermaIndex[midT][1]] )
-                    LTStart.push(ExtermaIndex[startT][1]+1);
+                    LTStart.push(ExtermaIndex[startT][1]);
                     
                     //Correcting the endtime. The CC is found between A->B however it also exist between B->C, hence between B and C there is an extra value
                     
-                    Corrected_CCendIndex = ExtermaIndex[midT][1] + NE.slice(ExtermaIndex[midT][1]+1, ExtermaIndex[endT][1]).findIndex( e => e <= Es.at(-3)) ; 
+                    let Corrected_CCendIndex = ExtermaIndex[midT][1] + NE.slice(ExtermaIndex[midT][1]+1, ExtermaIndex[endT][1]).findIndex( e => e <= Es.at(-3)) ; 
                     
                     //~ LoadTS.push( [ ExtermaIndex[midT][1], ExtermaIndex[endT][1] ] ) //regular - uncorrected
-                     LoadTS.push( [ ExtermaIndex[midT][1], Corrected_CCendIndex ] ) // Corrected time output - the extra energy would be in the other cc
+                     LoadTS.push( [ ExtermaIndex[midT][1]-1, Corrected_CCendIndex ] ) // Corrected time output - the extra energy would be in the other cc
                     
 
                     
-                } else{ //transition from high to low
-                    LoadTS.push( [ ExtermaIndex[startT][1], ExtermaIndex[midT][1] ] )
+                }else{ //transition from high to low
+                    LoadTS.push( [ ExtermaIndex[startT][1]-1, ExtermaIndex[midT][1] ] )
                     GenTS.push( [ ExtermaIndex[startT][0], ExtermaIndex[startT][1]] )
                     
                     // Find when the E curve reaches the end point prior to CC (not there is some extra energy missing since timeseries is nto contious)
                     
-                    Egt_end = ExtermaList.slice(firstT,endT-1).findIndex( e => e>= Es.at(-2) ) 
-                    //~ console.log(ExtermaList.slice(firstT,endT))
-                    //~ console.log(Es.at(-2))
-                    //~ console.log(firstT)
-                    //~ console.log(startT)
-                    //~ console.log(Egt_end)
+                    let Egt_end = midT - ExtermaList.slice(firstT,midT).reverse().findIndex( e => e <= Es.at(-2) ) 
                     
-                    
-                    Corrected_CCstartIndex = ExtermaIndex[Egt_end][1]+1;
-
+                    let Corrected_CCstartIndex = ExtermaIndex[Egt_end][0]-1;
                     
                     ExtermaIndex.slice(firstT, Corrected_CCstartIndex)
                     
@@ -193,8 +200,8 @@ function ModRainflowAlgoritm(ExtermaList, ExtermaIndex, NE ){
     // Phase B: Dealing with residues
         //These are "half cycles" either Left hand side or right hand side of curve numbered with 0 for residue
     for(let idx = 0;  idx< Es.length-1 ;  idx++) {
-        Ecurrent = Es[ idx ];
-        Enext    = Es[ idx+1];
+        let Ecurrent = Es[ idx ];
+        let Enext    = Es[ idx+1];
         
         ampl   = Ecurrent-Enext
         
@@ -239,7 +246,7 @@ function ModRainflowAlgoritm(ExtermaList, ExtermaIndex, NE ){
         //Einto
         //Einto_T
     
-    CCA_out = { CritCap: {Gen: GenCC , Load: LoadCC} ,
+    let CCA_out = { CritCap: {Gen: GenCC , Load: LoadCC} ,
                 CycleTypes: {Gen: GenCycleType, Load: LoadCycleType},
                 CCTS: {Gen: GenTS , Load: LoadTS},
                 LTStart: LTStart,
@@ -252,28 +259,28 @@ function ModRainflowAlgoritm(ExtermaList, ExtermaIndex, NE ){
 }
 
 function findZeroCrossing(NE){
-    P=[...NE];
-    N=[...NE];
+    let P = [...NE];
+    let N = [...NE];
     
     
-    if (NE[0]==0){  
+    if (NE[0] == 0){  
         if (NE.find(a=> a!=0)>0){//Finds first non-zero value in NE 
              //all elements in P which are not positive are set to NaN  && All elements in N which are not negative are set to NaN
-            P.forEach( (val,ind,arr)=> {if(val<0){arr[ind]=NaN}})
-            N.forEach( (val,ind,arr)=> {if(val>=0){arr[ind]=NaN}}) 
+            P.forEach( (val,ind,arr) => {if(val<0){arr[ind]=NaN}})
+            N.forEach( (val,ind,arr) => {if(val>=0){arr[ind]=NaN}}) 
         } else{
-            P.forEach( (val,ind,arr)=> {if(val<=0){arr[ind]=NaN}})
-            N.forEach( (val,ind,arr)=> {if(val>0){arr[ind]=NaN}}) 
+            P.forEach( (val,ind,arr) => {if(val<=0){arr[ind]=NaN}})
+            N.forEach( (val,ind,arr) => {if(val>0){arr[ind]=NaN}}) 
         }
     } else{
-        P.forEach( (val,ind,arr)=> {if(val<=0){arr[ind]=NaN}})
-        N.forEach( (val,ind,arr)=> {if(val>0){arr[ind]=NaN}}) 
+        P.forEach( (val,ind,arr) => {if(val<=0){arr[ind]=NaN}})
+        N.forEach( (val,ind,arr) => {if(val>0){arr[ind]=NaN}}) 
     }
     
-    maxTimes = SepByNaN(P)
-    minTimes = SepByNaN(N)
+    let maxTimes = SepByNaN(P)
+    let minTimes = SepByNaN(N)
     
-    ExtermaIndex = [];
+    let ExtermaIndex = [];
     
     if(maxTimes.length == 0)
         ExtermaIndex = minTimes;
@@ -307,16 +314,16 @@ function SepByNaN(A){
     if  (! isNaN(A.at(-1)) )
         A.push(NaN);
     
-    Idx2 = A.reduce(function(a, e, i) {
+    let Idx2 = A.reduce(function(a, e, i) {
                     if (isNaN(e))
                         a.push(i);
                     return a;
                 }, []);
                 
-    Idx1 = Idx2.slice(0,-1).map( e => e+1);
+    let Idx1 = Idx2.slice(0,-1).map( e => e+1);
     Idx1.unshift(0) 
                 
-    TimeRecord = []
+    let TimeRecord = []
     for(const j in Idx2){
         if (Idx1[j] < Idx2[j])
             TimeRecord.push([Idx1[j], Idx2[j]-1]);
