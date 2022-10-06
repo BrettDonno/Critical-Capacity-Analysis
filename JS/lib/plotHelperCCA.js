@@ -51,7 +51,9 @@ function loadSelectedData(fileInputTag, dtInput){
 
 
 
-function loadSampleData(fileName){
+function loadSampleData(){
+    
+    let fileName = "JS\\SampleData.csv"
     
     let dataLoadPromise = importPETData(fileName) 
     
