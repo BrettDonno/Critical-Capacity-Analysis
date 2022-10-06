@@ -30,26 +30,58 @@
 } 
 
 .centerContent{
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
- align-items:center;
- margin-left: auto;
- margin-right: auto;
- background-color:white;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    align-items:center;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    background-color:white;
+}
+
+.custom-file-upload {
+    display: flex;
+    align-items:center;
+    margin-left: auto;
+    margin-right: auto;
+    background-color:white;
+}
+
+.custom-file-upload-div {
+    border: 1px solid #ccc;
+    display: inline-block;
+    padding: 6px 12px;
+    cursor: pointer;
+    margin-left: auto;
+    margin-right: auto;
+    background-color:white;
+}
+
+.topBar{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    grid-auto-rows: minmax(100px, auto);
+}
+
+.sectionHeading{
+    text-align: center;
+    font-weight: bold;
+    
 }
 
 .centerButton{
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
- align-items:center;
- margin-left: auto;
- margin-right: auto;
- background-color:white;
- user-select: none; /* prevent user holding button too long*/
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    text-align: center;
+    align-items:center;
+    margin-left: auto;
+    margin-right: auto;
+    user-select: none; /* prevent user holding button too long*/
 }
 /*
 .buttonSize{
@@ -60,7 +92,7 @@ font-size:24px;
 */
 
 /*column headers*/
-.MyHdr {
+.tblHead{
 	position: sticky;
 	top: 0;
 	z-index: 100;
@@ -70,7 +102,7 @@ font-size:24px;
 }
 /*column rows*/
 
-td{
+.tabCell{
 	position: sticky;
   border:1px solid black;
   text-align: center;
@@ -78,7 +110,7 @@ td{
   /*line-height: 0;*/
 }
 
-table{
+.scrollTable{
   height: 450px;
   display:block;
    overflow-y:scroll;
@@ -86,4 +118,14 @@ table{
 	text-align:center;
 	vertical-align: middle;
 }
+
+
+
+.ccSelector{
+    font-size: 32px;
+    display: block;
+    text-align:center;
+    width: 100px;
+}
+
 
