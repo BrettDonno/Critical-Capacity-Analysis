@@ -1,6 +1,70 @@
  <!DOCTYPE html>
 <html>
-<head>
-<meta http-equiv="refresh" content="0; url=JS/CCA_plotpage.html" />
-</head>
+    <head>
+        <meta charset="UTF-8">
+        <title> Critical Capacity Analysis</title>
+        <!--  Added Libs -->
+        <script src = "JS\lib\CCA_lib.js"></script>
+        <script src = "JS\lib\plotHelperCCA.js"></script>
+        <!--  Using CDN for external libs-->
+        <script src = "https://cdn.plot.ly/plotly-2.14.0.min.js"></script>
+        <script src = "https://cdnjs.cloudflare.com/ajax/libs/d3/7.6.1/d3.min.js"> </script>
+    </head>
+        <!--  Stylesheet for setting up page-->
+        <link rel="stylesheet" type="text/css" href="PlotLayout.css">
+        
+        <script>        
+        //function to setup layout - this plots dummy figurse
+        function intiliseEmptyPlots(){
+            Plotly.newPlot('Power_Plot',[], {title: 'Power timeseries'});
+            Plotly.newPlot('Energy_Plot',[], {title: 'Energy timeseries'});
+            Plotly.newPlot('GES_ES_Plot',[], {title: 'GSE to Es trade-off'});
+            Plotly.newPlot('CCi_P_Plot',[], {title: 'Power for Crit. Cap. # '});
+            Plotly.newPlot('CCi_E_Plot',[], {title: 'Energy for Crit. Cap. # '});
+            
+            createTablehead(document.getElementById('tableDataDisplay'), ['CC index','CC Magnitude', 'GSE @ CC','T Start (gen)','CC Ts','CC Te','Inner CC'], 'tblHead')
+        }
+        </script>
+        
+    <body onload = 'intiliseEmptyPlots()'>
+        <div class = "row">
+            <div class = 'centerContent'>
+                <div class = "custom-file-upload-div">
+                        <span class = 'sectionHeading'> Import User Data     </span>
+                        <input class = "custom-file-upload" , type  = "file" , name = "input_file" , id = "input_file" , accept = ".csv" >
+                        <input type = 'number' , id = "dtSelect">
+                         <label for="dtSelect"> dt step</label>  
+                         <button class = "centerButton" onclick = "loadSelectedData(document.getElementById('input_file'),document.getElementById('dtSelect') )"> Submit Data</button> 
+                </div>
+               <div class = "custom-file-upload-div">
+                    <span class = 'sectionHeading'> Example Dataset   </span>
+                    <button class = "centerButton"  ,  onclick = 'loadSampleData("JS\SampleData.csv")'> Submit Sample Data</button>
+ <!--                    <button class = "centerButton"  ,  onclick = 'updatePlot(exampleT, exampleE, true)'> Submit Sample Data</button>-->
+                </div>
+            </div>a
+            
+        </div>
+        
+        
+    <!--Create somewhere to draw the plots -->
+        <div class = "row">
+            <div class = "column" , id="Power_Plot"></div>
+            <div class = "column" , id="Energy_Plot"></div>
+        </div>
+        
+        <div class = "row">
+            <div  class = "column" , id = "GES_ES_Plot">      </div>
+                <div class = "column"> 
+                    <div style = '  display: inline-block; align-self: flex-end;'>
+                        <span class = 'sectionHeading'> CC selector   </span>
+                        <input type = "number" , class = 'ccSelector' , id = "CC_Selector" , min = '1' , max = '1'  , autocomplete = 'off', disabled = 'true'>
+                    </div>
+                    <table id = 'tableDataDisplay' , class = 'scrollTable'>
+                    </table>
+                </div>
+        </div>
+        
+        <div  class = "row" id = "CCi_P_Plot">  </div>
+        <div  class = "row" id = "CCi_E_Plot">  </div>
+    </body>
 </html> 
