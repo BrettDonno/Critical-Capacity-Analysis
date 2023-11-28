@@ -189,7 +189,7 @@ function fillCCTable(CCA_results,T, P, E){
         appendTable(tableDataDisplay, rowdata,'tabCell')
     }
     //Initially select the first CC
-    currentActiveCC = changeButtonColor( document.getElementById('tableDataDisplay').rows[0].querySelector('Button'), null );
+    currentActiveCC = changeButtonColor( document.getElementById('tableDataDisplay').rows[1].querySelector('Button'), null );
     selectActiveCC(CCA_results, Number(currentActiveCC.textContent), T, P, E)
     
     function formatDateString(d){
