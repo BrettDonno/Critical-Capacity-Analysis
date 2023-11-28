@@ -191,6 +191,7 @@ function fillCCTable(CCA_results,T, P, E){
     //Initially select the first CC
     currentActiveCC = changeButtonColor( document.getElementById('tableDataDisplay').rows[1].querySelector('Button'), null );
     selectActiveCC(CCA_results, Number(currentActiveCC.textContent), T, P, E)
+    ccScroll.value = currentActiveCC.textContent
     
     function formatDateString(d){
         return  [d.getDate().toString().padStart(2,'0'),  (d.getMonth()+1).toString().padStart(2,'0'), d.getFullYear()].join('/') + 
