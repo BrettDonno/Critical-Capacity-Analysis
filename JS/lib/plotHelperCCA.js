@@ -202,7 +202,7 @@ function fillCCTable(CCA_results,T, P, E){
 /////////////////////////////////////////////////////////
 //                  Selector for CC #                  //
 /////////////////////////////////////////////////////////
-function c(newActiveBut,currentActiveBut){
+function changeButtonColor(newActiveBut,currentActiveBut){
     if( currentActiveBut != null ){ //another is active
         currentActiveBut.style.background = ''; //deactive color from #008000
         currentActiveBut.parentElement.parentElement.bgColor = '';
