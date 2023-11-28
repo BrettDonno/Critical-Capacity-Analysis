@@ -420,16 +420,12 @@ function updatePlot( T, P, isEnergy = false, tStep){
      E = CalcNetEnergy( P,tStep )   
     }
 
-    fillCCTable( CCA_results, T, P, E)
-    
-    
-    //adding the three fixed traces ('fixed' for given data)
+    //adding the GSE,P,E fixed traces. fixed in terms of unchanging based on input data.
     Plotly.react('Power_Plot',
         [{x: T ,y: P}], 
         {title: 'Power timeseries', xaxis:{title: 'Time (hr)'},yaxis:{title: 'Power (P Units)'} }
         );
 
-    
     Plotly.react('Energy_Plot',
         [{x: T,y: E}],
         {title: 'Energy timeseries',xaxis:{title: 'Time (hr)'},yaxis:{title: 'Energy (E Units)'},hovermode: 'x unified' }
@@ -439,6 +435,8 @@ function updatePlot( T, P, isEnergy = false, tStep){
         [ {name:'GSE v E',x: CCA_results.CritCap.Load,y: CCA_results.GSE , mode: 'lines+markers' , hovertemplate: 'GSE: %{y:.2f}' + '<br>' + '  Es: %{x:.2f}' + '<extra></extra>'} ], 
         {title: 'GSE to Es trade-off', showlegend: false, xaxis:{title: 'Storage Capacity (E Units)'},yaxis:{title: 'GSE (E Units)'}}
         );
+  
+    fillCCTable( CCA_results, T, P, E)
     
     // set the 
     //~ Plotly.react('CCi_P_Plot',
@@ -461,4 +459,5 @@ function updatePlot( T, P, isEnergy = false, tStep){
     // => sum(TimeSeries) = K = t0+ (t0+1*Z) + (t0+2*Z) + ... + (t0+ (N-1)*Z) 
     // Rearrange:  K= t0*N + Z*(1+2+...+(N-1)      => natrual numbers from 1+2+...+N = N*(N+1)/2
     // => K = t0*N + Z*((N-1)*(N-1+1))/2 
+    // => K= t0*N  + Z( (N-1)* (N/2) )
 //~ var tStep = (T.reduce((a,b) => a+b,0) - T[0]*(T.length)) / (T.length*(T.length-1)/2);
