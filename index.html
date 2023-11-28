@@ -15,7 +15,7 @@
         
         <script>        
         //function to setup layout - this plots dummy figurse
-        function intiliseEmptyPlots(){
+        function intilisePlots(){
             Plotly.newPlot('Power_Plot',[], {title: 'Power timeseries'});
             Plotly.newPlot('Energy_Plot',[], {title: 'Energy timeseries'});
             Plotly.newPlot('GES_ES_Plot',[], {title: 'GSE to Es trade-off'});
@@ -23,10 +23,12 @@
             Plotly.newPlot('CCi_E_Plot',[], {title: 'Energy for Crit. Cap. # '});
             
             createTablehead(document.getElementById('tableDataDisplay'), ['CC index','CC Magnitude', 'GSE @ CC','T Start (gen)','CC Ts','CC Te','Inner CC'], 'tblHead')
+         
+         loadSampleData("JS\SampleData.csv")
         }
         </script>
         
-    <body onload = 'intiliseEmptyPlots()'>
+    <body onload = 'intilisePlots()'>
         <div class = "row">
             <div class = 'centerContent'>
                 <div class = "custom-file-upload-div">
@@ -38,7 +40,7 @@
                 </div>
                <div class = "custom-file-upload-div">
                     <span class = 'sectionHeading'> Example Dataset   </span>
-                    <button class = "centerButton"  ,  onclick = 'loadSampleData("JS\SampleData.csv")'> Submit Sample Data</button>
+                    <button class = "centerButton"  ,  onclick = 'loadSampleData("JS\SampleData.csv")'> Reset to example data</button>
  <!--                    <button class = "centerButton"  ,  onclick = 'updatePlot(exampleT, exampleE, true)'> Submit Sample Data</button>-->
                 </div>
             </div>
