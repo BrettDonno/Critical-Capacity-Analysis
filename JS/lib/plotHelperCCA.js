@@ -295,7 +295,7 @@ function selectActiveCC(CCA_results, selectedCC, T, P, E){
     let ELayout =  { 
         title: 'Energy for Crit. Cap. # ' + (selectedCC),
         showlegend: false,
-        yaxis: {title: 'Power (P units)', fixedrange: true},
+        yaxis: {title: 'Energy (E units)', fixedrange: true},
         xaxis : {title: 'Time (hr)', fixedrange: true},
         shapes: [{
                 type: 'line',
