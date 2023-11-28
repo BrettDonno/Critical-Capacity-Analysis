@@ -186,12 +186,11 @@ function fillCCTable(CCA_results,T, P, E){
         
         }
         rowdata.push('Not Impl') //innerCC
-
-        
-        
         appendTable(tableDataDisplay, rowdata,'tabCell')
-        
     }
+    //Initially select the first CC
+    currentActiveCC = changeButtonColor( document.getElementById('tableDataDisplay').rows[0].querySelector('Button'), null );
+    selectActiveCC(CCA_results, Number(currentActiveCC.textContent), T, P, E)
     
     function formatDateString(d){
         return  [d.getDate().toString().padStart(2,'0'),  (d.getMonth()+1).toString().padStart(2,'0'), d.getFullYear()].join('/') + 
@@ -203,7 +202,7 @@ function fillCCTable(CCA_results,T, P, E){
 /////////////////////////////////////////////////////////
 //                  Selector for CC #                  //
 /////////////////////////////////////////////////////////
-function changeButtonColor(newActiveBut,currentActiveBut){
+function c(newActiveBut,currentActiveBut){
     if( currentActiveBut != null ){ //another is active
         currentActiveBut.style.background = ''; //deactive color from #008000
         currentActiveBut.parentElement.parentElement.bgColor = '';
@@ -440,7 +439,7 @@ function updatePlot( T, P, isEnergy = false, tStep){
         {title: 'GSE to Es trade-off', showlegend: false, xaxis:{title: 'Storage Capacity (E Units)'},yaxis:{title: 'GSE (E Units)'}}
         );
     
-    
+    // set the 
     //~ Plotly.react('CCi_P_Plot',
         //~ [{x: T ,y: P,  hovertemplate: 'P: %{y}' + '<br>' + 'T: %{x}' + '<extra></extra>'}], 
         //~ {title: 'Power for Crit. Cap. # ', showlegend: false , yaxis: {title: 'Power (P units)', fixedrange: true}, xaxis : {title: 'Time (hr)', fixedrange: true} }
@@ -456,7 +455,8 @@ function updatePlot( T, P, isEnergy = false, tStep){
 /////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////
 
-//some magic here. Maths: Start time -testTime[0] = t0 then a timeseries of N len  with stepsizeZ,  
+//some magic here. TO find step size Z from a timeseries:
+// Maths: Start time -testTime[0] = t0 then a timeseries of N len  with stepsizeZ,  
     // => sum(TimeSeries) = K = t0+ (t0+1*Z) + (t0+2*Z) + ... + (t0+ (N-1)*Z) 
     // Rearrange:  K= t0*N + Z*(1+2+...+(N-1)      => natrual numbers from 1+2+...+N = N*(N+1)/2
     // => K = t0*N + Z*((N-1)*(N-1+1))/2 
