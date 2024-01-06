@@ -42,6 +42,8 @@ function loadSelectedData(fileInputTag, dtInput){
 
     //handles fractions, decimal
     let dtVal = dtInput.value.split('/').reduce((n, d, i) => n / (i ? d : 1));
+
+    console.log(dtVal)
     
     dataLoadPromise.then( dataET => {
         if(dataET.Energy.length >0 )
