@@ -39,12 +39,15 @@ function importPETData(fileName){
 function loadSelectedData(fileInputTag, dtInput){
     let inFile = URL.createObjectURL( fileInputTag.files[0]) 
     let dataLoadPromise = importPETData(inFile) 
+
+    //handles fractions, decimal
+    let dtVal = dtInput.split('/').reduce((n, d, i) => n / (i ? d : 1));
     
     dataLoadPromise.then( dataET => {
         if(dataET.Energy.length >0 )
-            updatePlot(dataET.Time, dataET.Energy, true, dtInput.valueAsNumber)
+            updatePlot(dataET.Time, dataET.Energy, true, dtVal)
         else
-            updatePlot(dataET.Time, dataET.Power, false, dtInput.valueAsNumber)
+            updatePlot(dataET.Time, dataET.Power, false, dtVal)
       });
       
 }
