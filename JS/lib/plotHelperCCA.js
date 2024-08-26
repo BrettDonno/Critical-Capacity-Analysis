@@ -93,7 +93,7 @@ async function loadSampleData(){
         });
     
     //let dataLoadPromise = importPETData() 
-    let dataLoadPromise = readCSV_TPE() 
+    let dataLoadPromise = readCSV_TPE(importFobj) 
     
   dataLoadPromise.then( dataET => {
     dataET.Time.unshift(dataET.Time[0]) // extra 0 since sample data does not have this for peak/trough analysis
