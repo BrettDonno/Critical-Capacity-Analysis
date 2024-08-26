@@ -4,61 +4,100 @@
 //                  Import Data                       //
 /////////////////////////////////////////////////////////
 
-function importPETData(fileName){
-    
-    let PET_data = {'Power':[], 'Time':[], 'Energy':[]};
-    let dataLoadPromise = d3.csv(fileName, rowData => {
-        
-        let rowKeys = Object.keys(rowData);
-        
-        rowKeys.forEach( e => {
-            if(e.toLowerCase().includes("energy"))
-                PET_data.Energy.push( Number(rowData[e]) )
-           else if(e.toLowerCase().includes("power"))
-                PET_data.Power.push( Number(rowData[e]) )
-            
-            else if(e.toLowerCase().includes("time")){  // Checking type of time
-                if (new Date(rowData[e]) instanceof Date && !isNaN(new Date(rowData[e]).valueOf()))
-                    PET_data.Time.push( new Date(rowData[e]) )
-                
-                else if(!isNaN( Number(rowData[e]) ) )
-                    PET_data.Time.push( Number(rowData[e]) )
-                
-                else  
-                     PET_data.Time.push( rowData[e] )
-            }
-            else
-                alert("CSV import failed - headers should contain 'time' or either: i) 'power'  ii) 'energy' ")
-        })
-    }).then( (_) => {return PET_data});
-    
-    return dataLoadPromise;
-}
 
+//~ function importPETData(fileName){
+    //~ let PET_data = {'Power':[], 'Time':[], 'Energy':[]};
+    //~ let dataLoadPromise = d3.csv(fileName, rowData => {
+        
+        //~ let rowKeys = Object.keys(rowData);
+        
+        //~ rowKeys.forEach( e => {
+            //~ if(e.toLowerCase().includes("energy"))
+                //~ PET_data.Energy.push( Number(rowData[e]) )
+           //~ else if(e.toLowerCase().includes("power"))
+                //~ PET_data.Power.push( Number(rowData[e]) )
+            
+            //~ else if(e.toLowerCase().includes("time")){  // Checking type of time
+                //~ if (new Date(rowData[e]) instanceof Date && !isNaN(new Date(rowData[e]).valueOf()))
+                    //~ PET_data.Time.push( new Date(rowData[e]) )
+                
+                //~ else if(!isNaN( Number(rowData[e]) ) )
+                    //~ PET_data.Time.push( Number(rowData[e]) )
+                
+                //~ else  
+                     //~ PET_data.Time.push( rowData[e] )
+            //~ }
+            //~ else
+                //~ alert("CSV import failed - headers should contain 'time' or either: i) 'power'  ii) 'energy' ")
+        //~ })
+    //~ }).then( (_) => {return PET_data});
+    
+    //~ return dataLoadPromise;
+//~ }
+
+
+async function readCSV_TPE(fileObj){
+    let fileText = await fileObj.text();
+    
+    return new Promise( (resolve,reject) => {
+        let PET_data = {'Power':[], 'Time':[], 'Energy':[]};
+        let eachRow = fileText.split('\r\n');
+        let tempResults = {};
+        let HeaderText = eachRow[0].split(',');
+        HeaderText.forEach( head => tempResults[head]=[]);
+
+        
+        for( let j = 1; j < eachRow.length; j++){
+            let rowTxt = eachRow[j].split(',')
+            HeaderText.forEach( (head,index) => {tempResults[head].push(rowTxt[index])} ) 
+        }
+        HeaderText.forEach( head => {
+            if( head.toLowerCase().includes("power"))
+                PET_data['Power'] = tempResults[head]
+            if( head.toLowerCase().includes("energy"))
+                PET_data['Energy'] = tempResults[head]
+            if( head.toLowerCase().includes("time"))
+                PET_data['Time'] = tempResults[head]
+        })
+        resolve(PET_data)
+    })
+    
+}
+ await readCSV_TPE(q)
 
 function loadSelectedData(fileInputTag, dtInput){
-    let inFile = URL.createObjectURL( fileInputTag.files[0]) 
-    let dataLoadPromise = importPETData(inFile) 
+    let inFile = fileInputTag.files[0]
+    //let dataLoadPromise = importPETData(inFile) 
+    let dataLoadPromise = readCSV_TPE(inFile)  
 
     //handles fractions, decimal
     let dtVal = dtInput.value.split('/').reduce((n, d, i) => n / (i ? d : 1));
     
     dataLoadPromise.then( dataET => {
-        if(dataET.Energy.length >0 )
+        if(dataET.Energy.length >0 ) // we have energy data 
             updatePlot(dataET.Time, dataET.Energy, true, dtVal)
-        else
+        else // we have power data
             updatePlot(dataET.Time, dataET.Power, false, dtVal)
       });
       
 }
 
 
-
 function loadSampleData(){
     
     let fileName = "JS\\SampleData.csv"
     
-    let dataLoadPromise = importPETData(fileName) 
+    //let dataLoadPromise = importPETData(fileName) 
+    let importFobj = await fetch("JS\\SampleData.csv", {
+            method: 'get',
+            headers: {
+                'content-type': 'text/csv;charset=UTF-8',
+
+            }
+        });
+    
+    //let dataLoadPromise = importPETData() 
+    let dataLoadPromise = readCSV_TPE() 
     
   dataLoadPromise.then( dataET => {
     dataET.Time.unshift(dataET.Time[0]) // extra 0 since sample data does not have this for peak/trough analysis
