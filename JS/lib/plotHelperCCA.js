@@ -63,7 +63,6 @@ async function readCSV_TPE(fileObj){
     })
     
 }
- await readCSV_TPE(q)
 
 function loadSelectedData(fileInputTag, dtInput){
     let inFile = fileInputTag.files[0]
