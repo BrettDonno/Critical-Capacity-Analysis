@@ -42,13 +42,10 @@ async function readCSV_TPE(fileObj){
         let PET_data = {'Power':[], 'Time':[], 'Energy':[]};
         let eachRow = fileText.split('\r\n');
         let HeaderText = eachRow[0].split(',');
-        HeaderText.forEach( head => tempResults[head]=[]);
-
         
         for( let j = 1; j < eachRow.length; j++){
             let rowTxt = eachRow[j].split(',')
-            HeaderText.forEach( (head,index) => {
-                
+            HeaderText.forEach( (head,index) => {                
                 if( head.toLowerCase().includes("power"))
                     PET_data['Power'].push( Number(rowTxt[index]) )
                 
@@ -59,17 +56,15 @@ async function readCSV_TPE(fileObj){
                     if (new Date(rowTxt[index]) instanceof Date && !isNaN(new Date(rowTxt[index]).valueOf()))
                         PET_data.Time.push( new Date(rowTxt[index]) )
                     
-                    else if(!isNaN( Number(rowData[e]) ) )
+                    else if(!isNaN( Number(rowTxt[index]) ) )
                         PET_data.Time.push( Number(rowTxt[index]) )
                     
                     else  
-                         PET_data.Time.push( rowData[e] )
+                         PET_data.Time.push( rowTxt[index] )
                 }
             } ) 
         }
-        HeaderText.forEach( head => {
-
-        })
+        console.log(PET_data)
         resolve(PET_data)
     })
     
