@@ -87,7 +87,7 @@ function loadSampleData(){
     let fileName = "JS\\SampleData.csv"
     
     //let dataLoadPromise = importPETData(fileName) 
-    let importFobj = await fetch("JS\\SampleData.csv", {
+    let importFobj = fetch("JS\\SampleData.csv", {
             method: 'get',
             headers: {
                 'content-type': 'text/csv;charset=UTF-8',
