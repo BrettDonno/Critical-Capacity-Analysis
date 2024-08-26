@@ -82,17 +82,14 @@ function loadSelectedData(fileInputTag, dtInput){
 }
 
 
-function loadSampleData(){
+async function loadSampleData(){
     
     let fileName = "JS\\SampleData.csv"
     
     //let dataLoadPromise = importPETData(fileName) 
-    let importFobj = fetch("JS\\SampleData.csv", {
+    let importFobj = await fetch(fileName, {
             method: 'get',
-            headers: {
-                'content-type': 'text/csv;charset=UTF-8',
-
-            }
+            headers: {'content-type': 'text/csv;charset=UTF-8',}
         });
     
     //let dataLoadPromise = importPETData() 
