@@ -3,36 +3,36 @@
 /////////////////////////////////////////////////////////
 //                  Import Data                       //
 /////////////////////////////////////////////////////////
-function importPETData(fileName){
+// function importPETData(fileName){
     
-    let PET_data = {'Power':[], 'Time':[], 'Energy':[]};
-    let dataLoadPromise = d3.csv(fileName, rowData => {
+//     let PET_data = {'Power':[], 'Time':[], 'Energy':[]};
+//     let dataLoadPromise = d3.csv(fileName, rowData => {
         
-        let rowKeys = Object.keys(rowData);
+//         let rowKeys = Object.keys(rowData);
         
-        rowKeys.forEach( e => {
-            if(e.toLowerCase().includes("energy"))
-                PET_data.Energy.push( Number(rowData[e]) )
-           else if(e.toLowerCase().includes("power"))
-                PET_data.Power.push( Number(rowData[e]) )
+//         rowKeys.forEach( e => {
+//             if(e.toLowerCase().includes("energy"))
+//                 PET_data.Energy.push( Number(rowData[e]) )
+//            else if(e.toLowerCase().includes("power"))
+//                 PET_data.Power.push( Number(rowData[e]) )
             
-            else if(e.toLowerCase().includes("time")){  // Checking type of time
-                if (new Date(rowData[e]) instanceof Date && !isNaN(new Date(rowData[e]).valueOf()))
-                    PET_data.Time.push( new Date(rowData[e]) )
+//             else if(e.toLowerCase().includes("time")){  // Checking type of time
+//                 if (new Date(rowData[e]) instanceof Date && !isNaN(new Date(rowData[e]).valueOf()))
+//                     PET_data.Time.push( new Date(rowData[e]) )
                 
-                else if(!isNaN( Number(rowData[e]) ) )
-                    PET_data.Time.push( Number(rowData[e]) )
+//                 else if(!isNaN( Number(rowData[e]) ) )
+//                     PET_data.Time.push( Number(rowData[e]) )
                 
-                else  
-                     PET_data.Time.push( rowData[e] )
-            }
-            else
-                alert("CSV import failed - headers should contain 'time' or either: i) 'power'  ii) 'energy' ")
-        })
-    }).then( (_) => {return PET_data});
+//                 else  
+//                      PET_data.Time.push( rowData[e] )
+//             }
+//             else
+//                 alert("CSV import failed - headers should contain 'time' or either: i) 'power'  ii) 'energy' ")
+//         })
+//     }).then( (_) => {return PET_data});
     
-    return dataLoadPromise;
-}
+//     return dataLoadPromise;
+// }
 
 
 async function readCSV_TPE(fileObj){
@@ -50,10 +50,10 @@ async function readCSV_TPE(fileObj){
             HeaderText.forEach( (head,index) => {
                 
                 if( head.toLowerCase().includes("power"))
-                    PET_data['Power'].push(rowTxt[index])
+                    PET_data['Power'].push( Number(rowTxt[index]) )
                 
                 if( head.toLowerCase().includes("energy"))
-                    PET_data['Energy'].push(rowTxt[index])
+                    PET_data['Energy'].push( Number(rowTxt[index]) )
                 
                 if( head.toLowerCase().includes("time")){  // Checking type of time
                     if (new Date(rowTxt[index]) instanceof Date && !isNaN(new Date(rowTxt[index]).valueOf()))
