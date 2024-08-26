@@ -43,8 +43,9 @@ async function readCSV_TPE(fileObj){
         let eachRow = fileText.split('\r\n');
         let HeaderText = eachRow[0].split(',');
         
-        for( let j = 1; j < eachRow.length; j++){
+        for( let j = 1; j < eachRow.length-1; j++){
             let rowTxt = eachRow[j].split(',')
+            
             HeaderText.forEach( (head,index) => {                
                 if( head.toLowerCase().includes("power"))
                     PET_data['Power'].push( Number(rowTxt[index]) )
@@ -53,30 +54,36 @@ async function readCSV_TPE(fileObj){
                     PET_data['Energy'].push( Number(rowTxt[index]) )
                 
                 if( head.toLowerCase().includes("time")){  // Checking type of time
-                    if (new Date(rowTxt[index]) instanceof Date && !isNaN(new Date(rowTxt[index]).valueOf()))
-                        PET_data.Time.push( new Date(rowTxt[index]) )
-                    
-                    else if(!isNaN( Number(rowTxt[index]) ) )
-                        PET_data.Time.push( Number(rowTxt[index]) )
-                    
-                    else  
-                         PET_data.Time.push( rowTxt[index] )
-                }
+                        let rowDate = new Date(rowTxt[index])
+                        if (rowDate instanceof Date && !isNaN(rowDate).valueOf() )
+                            PET_data.Time.push( new Date(rowTxt[index]) )
+                        
+                        else if(!isNaN( Number(rowTxt[index]) ) )
+                            PET_data.Time.push( Number(rowTxt[index]) )
+                        
+                        else  
+                             PET_data.Time.push( rowTxt[index] )
+                    }
             } ) 
         }
-        console.log(PET_data)
         resolve(PET_data)
     })
     
 }
 
 function loadSelectedData(fileInputTag, dtInput){
+    
+    
     let inFile = fileInputTag.files[0]
     //let dataLoadPromise = importPETData(inFile) 
     let dataLoadPromise = readCSV_TPE(inFile)  
 
     //handles fractions, decimal
-    let dtVal = dtInput.value.split('/').reduce((n, d, i) => n / (i ? d : 1));
+    let dtVal = dtInput.value
+    if  (dtVal) //user inpust dt
+         dtVal = dtVal.split('/').reduce((n, d, i) => n / (i ? d : 1));
+    else //Default to 1 a
+        dtVal = 1 
     
     dataLoadPromise.then( dataET => {
         if(dataET.Energy.length >0 ) // we have energy data 
