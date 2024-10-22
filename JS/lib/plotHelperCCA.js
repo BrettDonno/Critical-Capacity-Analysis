@@ -67,7 +67,7 @@ async function readCSV_TPE(fileObj){
                 } ) 
             }
         }
-        console.log(PET_data)
+       // console.log(PET_data)
         resolve(PET_data)
     })
     
