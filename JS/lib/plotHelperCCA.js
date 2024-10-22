@@ -43,7 +43,7 @@ async function readCSV_TPE(fileObj){
         let eachRow = fileText.split('\r\n');
         let HeaderText = eachRow[0].split(',');
         
-        for( let j = 1; j < eachRow.length-1; j++){
+        for( let j = 1; j < eachRow.length; j++){
             let rowTxt = eachRow[j].split(',')
             
             HeaderText.forEach( (head,index) => {                
