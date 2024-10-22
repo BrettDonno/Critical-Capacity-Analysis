@@ -44,7 +44,7 @@ async function readCSV_TPE(fileObj){
         let HeaderText = eachRow[0].split(',');
         
         for( let j = 1; j < eachRow.length; j++){
-            if eachRow[j] !== ""{
+            if(eachRow[j] !== ""){
                 let rowTxt = eachRow[j].split(',')            
                 HeaderText.forEach( (head,index) => {                
                     if( head.toLowerCase().includes("power"))
