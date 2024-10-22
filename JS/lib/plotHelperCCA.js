@@ -43,7 +43,7 @@ async function readCSV_TPE(fileObj){
         let eachRow = fileText.split('\r\n');
         let HeaderText = eachRow[0].split(',');
         
-        for( let j = 0; j < eachRow.length-1; j++){
+        for( let j = 1; j < eachRow.length; j++){
             let rowTxt = eachRow[j].split(',')
             
             HeaderText.forEach( (head,index) => {                
@@ -64,6 +64,7 @@ async function readCSV_TPE(fileObj){
                         else  
                              PET_data.Time.push( rowTxt[index] )
                     }
+                console.log(PET_data.Time)
             } ) 
         }
         resolve(PET_data)
