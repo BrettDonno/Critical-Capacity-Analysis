@@ -44,27 +44,28 @@ async function readCSV_TPE(fileObj){
         let HeaderText = eachRow[0].split(',');
         
         for( let j = 1; j < eachRow.length; j++){
-            let rowTxt = eachRow[j].split(',')
-            
-            HeaderText.forEach( (head,index) => {                
-                if( head.toLowerCase().includes("power"))
-                    PET_data['Power'].push( Number(rowTxt[index]) )
-                
-                if( head.toLowerCase().includes("energy"))
-                    PET_data['Energy'].push( Number(rowTxt[index]) )
-                
-                if( head.toLowerCase().includes("time")){  // Checking type of time
-                        let rowDate = new Date(rowTxt[index])
-                        if (rowDate instanceof Date && !isNaN(rowDate).valueOf() )
-                            PET_data.Time.push( new Date(rowTxt[index]) )
-                        
-                        else if(!isNaN( Number(rowTxt[index]) ) )
-                            PET_data.Time.push( Number(rowTxt[index]) )
-                        
-                        else  
-                             PET_data.Time.push( rowTxt[index] )
+            if eachRow[j] !== ""{
+                let rowTxt = eachRow[j].split(',')            
+                HeaderText.forEach( (head,index) => {                
+                    if( head.toLowerCase().includes("power"))
+                        PET_data['Power'].push( Number(rowTxt[index]) )
+                    
+                    if( head.toLowerCase().includes("energy"))
+                        PET_data['Energy'].push( Number(rowTxt[index]) )
+                    
+                    if( head.toLowerCase().includes("time")){  // Checking type of time
+                            let rowDate = new Date(rowTxt[index])
+                            if (rowDate instanceof Date && !isNaN(rowDate).valueOf() )
+                                PET_data.Time.push( new Date(rowTxt[index]) )
+                            
+                            else if(!isNaN( Number(rowTxt[index]) ) )
+                                PET_data.Time.push( Number(rowTxt[index]) )
+                            
+                            else  
+                                 PET_data.Time.push( rowTxt[index] )
                     }
-            } ) 
+                } ) 
+            }
         }
         console.log(PET_data)
         resolve(PET_data)
