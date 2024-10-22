@@ -64,9 +64,9 @@ async function readCSV_TPE(fileObj){
                         else  
                              PET_data.Time.push( rowTxt[index] )
                     }
-                console.log(PET_data.Time)
             } ) 
         }
+        console.log(PET_data)
         resolve(PET_data)
     })
     
