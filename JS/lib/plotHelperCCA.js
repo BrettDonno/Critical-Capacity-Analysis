@@ -54,13 +54,12 @@ async function readCSV_TPE(fileObj){
                         PET_data['Energy'].push( Number(rowTxt[index]) )
                     
                     if( head.toLowerCase().includes("time")){  // Checking type of time
+                        
                             let rowDate = new Date(rowTxt[index])
-                            if (rowDate instanceof Date && !isNaN(rowDate).valueOf() )
-                                PET_data.Time.push( new Date(rowTxt[index]) )
-                            
-                            else if(!isNaN( Number(rowTxt[index]) ) )
+                            if(!isNaN( Number(rowTxt[index]) ) )
                                 PET_data.Time.push( Number(rowTxt[index]) )
-                            
+                             else if (rowDate instanceof Date && !isNaN(rowDate).valueOf() )
+                                PET_data.Time.push( new Date(rowTxt[index]) )
                             else  
                                  PET_data.Time.push( rowTxt[index] )
                     }
